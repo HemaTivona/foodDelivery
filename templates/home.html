@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food App</title>
+    <style>
+        nav {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .nav-left {
+            flex: 1;
+        }
+
+        .nav-center {
+            flex: 1;
+            text-align: center;
+        }
+
+        .nav-right {
+            flex: 1;
+            text-align: right;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <!-- Left -->
+    <div class="nav-left">
+        <a href="/">Home</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+    </div>
+
+    <!-- Center -->
+    <div class="nav-center">
+        <form method="GET" action="/search/">
+            <input type="text" name="q" placeholder="Search food">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <!-- Right -->
+    <div class="nav-right">
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<hr>
+<h2>Restaurants</h2>
+
+{% if restaurants %}
+    <ul>
+        {% for restaurant in restaurants %}
+            <li>
+                <strong>{{ restaurant.name }}</strong><br>
+                {{ restaurant.description }}<br>
+                ⭐ {{ restaurant.rating }}<br>
+
+                <a href="{% url 'update_res' restaurant.id %}">Update</a>
+            </li>
+            <hr>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No restaurants added yet.</p>
+{% endif %}
+
+{% block content %}
+{% endblock %}
+
+<hr>
+
+<footer>
+    <p>© 2026 Food App</p>
+</footer>
+
+</body>
+</html>
