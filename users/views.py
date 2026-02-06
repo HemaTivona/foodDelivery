@@ -55,28 +55,20 @@ def logout_view(request):
 def profile_view(request):
     return render(request,'users/profile.html')
 
-
-from django.http import JsonResponse
-from django.db.models import Q
-
-
 def search(request):
     query = request.GET.get('q', '')
-    results = []
+    restaurants = []
 
     if query:
         restaurants = Restaurant.objects.filter(
             Q(name__icontains=query) |
             Q(description__icontains=query) |
             Q(rating__icontains=query) |
-            Q(categories__name__icontains=query) |   # ✅ FIXED
-            Q(fooditems__name__icontains=query)       # ✅ FIXED
+            Q(categories__name__icontains=query) |
+            Q(fooditems__name__icontains=query)
         ).distinct()
 
-        results = restaurants.values(
-            'id',
-            'name',
-            'rating'
-        )
-
-    return JsonResponse({'results': list(results)})
+    return render(request, 'users/search.html', {
+        'query': query,
+        'restaurants': restaurants
+    })

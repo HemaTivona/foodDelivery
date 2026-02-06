@@ -34,22 +34,32 @@ def add_res(request):
 
 
 @login_required
-def update_res(request,id):
-    rest = get_object_or_404(Restaurant,id = id, owner = request.user)
+def update_res(request, id):
+    restaurant = get_object_or_404(Restaurant, id=id, owner=request.user)
+
     if request.method == 'POST':
-        rest.name = request.POST.get('name')
-        rest.description = request.POST.get('description')
-        rest.rating = request.POST.get('rating')
-        rest.save()
+        restaurant.name = request.POST.get('name')
+        restaurant.description = request.POST.get('description')
+        restaurant.rating = request.POST.get('rating')
+        restaurant.save()
         return redirect('home')
-    return render(request,'restaurant/res.html', {'rest': rest})
+
+    return render(request, 'restaurant/res.html', {
+        'restaurant': restaurant
+    })
+
         
 @login_required
 def delete_res(request, id):
-    print("DELETE VIEW EXECUTED")
-    restaurant = get_object_or_404(Restaurant, id=id)
-    restaurant.delete()
-    return HttpResponse("DELETED SUCCESSFULLY")
+    restaurant = get_object_or_404(Restaurant, id=id, owner=request.user)
+
+    if request.method == "POST":
+        restaurant.delete()
+        return redirect("home")
+
+    return redirect("home")
+
+
 
 
     
