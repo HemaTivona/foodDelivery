@@ -1,18 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8">
+<title>Profile</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        padding: 40px;
+    }
+
+    .profile-card {
+        background: white;
+        max-width: 400px;
+        margin: auto;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    .info {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    a {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #f44336;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+</style>
 </head>
+
 <body>
-    <h2>Profile</h2>
 
-<p>Username: {{ request.user.username }}</p>
-<p>Role: {{ request.user.profile.role }}</p>
+<div class="profile-card">
+    <h2>My Profile</h2>
+    <p class="info"><strong>Username:</strong> {{ request.user.username }}</p>
+    <p class="info"><strong>Role:</strong> {{ request.user.profile.role }}</p>
 
-<a href="{% url 'logout' %}">Logout</a>
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
 
-    
 </body>
 </html>

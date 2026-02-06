@@ -1,7 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Restaurant
+from .models import Restaurant, FoodCategory, FoodItems
 from django.http import HttpResponse
+from django import forms
+from .form import FoodCategoryForm, FoodItemForm
 
 # Create your views here.
 
@@ -51,3 +53,52 @@ def delete_res(request, id):
 
 
     
+@login_required
+def add_category(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+
+    if request.method == 'POST':
+        form = FoodCategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.restaurant = restaurant
+            category.save()
+            return redirect('restaurant_detail', restaurant_id=restaurant.id)
+    else:
+        form = FoodCategoryForm()
+
+    return render(request, 'restaurant/add_category.html', {
+        'form': form,
+        'restaurant': restaurant
+    })
+
+@login_required
+def add_food_item(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+
+    if request.method == 'POST':
+        form = FoodItemForm(request.POST)
+        if form.is_valid():
+            food = form.save(commit=False)
+            food.restaurant = restaurant
+            food.save()
+            return redirect('restaurant_detail', restaurant.id)
+    else:
+        form = FoodItemForm()
+        form.fields['category'].queryset = FoodCategory.objects.filter(
+            restaurant=restaurant
+        )
+
+    return render(request, 'restaurant/add_food.html', {
+        'form': form,
+        'restaurant': restaurant
+    })
+
+def restaurant_detail(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    categories = restaurant.categories.all()
+
+    return render(request, 'restaurant/res_detail.html', {
+        'restaurant': restaurant,
+        'categories': categories
+    })

@@ -1,0 +1,82 @@
+{% extends "home.html" %}
+
+{% block content %}
+<style>
+    .form-container {
+        max-width: 480px;
+        margin: 40px auto;
+        background: #ffffff;
+        padding: 25px 30px;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    form p {
+        margin-bottom: 15px;
+    }
+
+    form input, form select, form textarea {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 10px;
+        background-color: #28a745;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .btn-submit:hover {
+        background-color: #218838;
+    }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        text-decoration: none;
+        color: #555;
+        font-weight: 500;
+    }
+
+    .back-link:hover {
+        color: #000;
+    }
+</style>
+
+<div class="form-container">
+    <h2>
+        Add Food Item
+        <br>
+        <small style="font-size:14px; color:#777;">
+            {{ restaurant.name }}
+        </small>
+    </h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-submit">
+            Add Food Item
+        </button>
+    </form>
+
+    <a href="{% url 'restaurant_detail' restaurant.id %}" class="back-link">
+        ← Back to Restaurant
+    </a>
+</div>
+
+{% endblock %}

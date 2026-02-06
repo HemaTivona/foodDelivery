@@ -12,5 +12,20 @@ class Restaurant(models.Model):
 def __str__(self):
     return self.name
 
+class FoodCategory(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='categories')
+    name = models.CharField(max_length=50)
 
+def __str__(self):
+    return f" {self.name} - {self.restaurant.name}"
+
+class FoodItems(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='fooditems')
+    category = models.ForeignKey(FoodCategory, on_delete=models.CASCADE, related_name='items')
+    name = models.CharField(max_length=50)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    is_available = models.BooleanField(default=True)
+
+def __str__(self):
+    return self.name
 

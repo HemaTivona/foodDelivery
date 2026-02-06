@@ -1,0 +1,173 @@
+{% extends "home.html" %}
+
+{% block content %}
+<style>
+    .restaurant-card {
+        max-width: 900px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+    }
+
+    .restaurant-header h2 {
+        margin-bottom: 5px;
+    }
+
+    .rating-badge {
+        display: inline-block;
+        background: #ffc107;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .action-links {
+        margin: 20px 0;
+    }
+
+    .action-links a {
+        text-decoration: none;
+        background: #007bff;
+        color: white;
+        padding: 8px 14px;
+        border-radius: 6px;
+        margin-right: 10px;
+        font-size: 14px;
+    }
+
+    .action-links a:hover {
+        background: #0056b3;
+    }
+
+    .category-card {
+        margin-top: 20px;
+        background: #f9f9f9;
+        padding: 18px;
+        border-radius: 10px;
+    }
+
+    .food-list {
+        list-style: none;
+        padding-left: 0;
+        margin-top: 10px;
+    }
+
+    .food-list li {
+        padding: 8px 12px;
+        background: #fff;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .food-price {
+        font-weight: bold;
+        color: #28a745;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 25px;
+        text-decoration: none;
+        color: #555;
+        font-weight: 500;
+    }
+
+    .back-link:hover {
+        color: #000;
+    }
+
+    .form-card {
+        margin-top: 25px;
+        padding: 20px;
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    form p {
+        margin-bottom: 12px;
+    }
+
+    form input, form select, form textarea {
+        width: 100%;
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+    .btn-save {
+        margin-top: 10px;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        background: #28a745;
+        color: white;
+        cursor: pointer;
+    }
+</style>
+
+<div class="restaurant-card">
+
+    <!-- Restaurant Info -->
+    <div class="restaurant-header">
+        <h2>{{ restaurant.name }}</h2>
+        <p>{{ restaurant.description }}</p>
+        <span class="rating-badge">⭐ {{ restaurant.rating }}</span>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-links">
+        <a href="{% url 'add_category' restaurant.id %}">
+            ➕ Add Category
+        </a>
+        <a href="{% url 'add_food_item' restaurant.id %}">
+            ➕ Add Food Item
+        </a>
+    </div>
+
+    <!-- Optional Form -->
+    {% if form %}
+    <div class="form-card">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-save">Save</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Categories & Food Items -->
+    <h3 style="margin-top:30px;">Categories & Food Items</h3>
+
+    {% for category in categories %}
+        <div class="category-card">
+            <h4>📂 {{ category.name }}</h4>
+
+            {% if category.items.all %}
+                <ul class="food-list">
+                    {% for food in category.items.all %}
+                        <li>
+                            <span>🍽️ {{ food.name }}</span>
+                            <span class="food-price">₹{{ food.price }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No food items in this category.</p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No categories added yet.</p>
+    {% endfor %}
+
+    <a href="{% url 'home' %}" class="back-link">
+        ← Back to Home
+    </a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Search Results</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        padding: 30px;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    .result-card {
+        background: white;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .rating {
+        color: #ff9800;
+        font-weight: bold;
+    }
+</style>
+</head>
+
+<body>
+
+<h2>Search Results for "<em>{{ query }}</em>"</h2>
+
+{% if results %}
+    {% for r in results %}
+        <div class="result-card">
+            <h3>{{ r.name }}</h3>
+            <p>{{ r.description }}</p>
+            <p class="rating">⭐ {{ r.rating }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No results found.</p>
+{% endif %}
+
+</body>
+</html>
