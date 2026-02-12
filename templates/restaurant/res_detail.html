@@ -24,13 +24,12 @@
         font-size: 14px;
     }
 
-    .action-links {
+    .admin-actions {
         margin: 20px 0;
     }
 
-    .action-links a {
+    .admin-actions a {
         text-decoration: none;
-        background: #007bff;
         color: white;
         padding: 8px 14px;
         border-radius: 6px;
@@ -38,15 +37,28 @@
         font-size: 14px;
     }
 
-    .action-links a:hover {
-        background: #0056b3;
-    }
+    .add-category { background: #007bff; }
+    .add-food { background: #28a745; }
 
     .category-card {
         margin-top: 20px;
         background: #f9f9f9;
         padding: 18px;
         border-radius: 10px;
+    }
+
+    .category-actions,
+    .food-actions {
+        margin-top: 6px;
+    }
+
+    .category-actions a,
+    .food-actions a,
+    .category-actions button,
+    .food-actions button {
+        margin-right: 8px;
+        font-size: 13px;
+        cursor: pointer;
     }
 
     .food-list {
@@ -62,11 +74,13 @@
         border-radius: 6px;
         display: flex;
         justify-content: space-between;
+        align-items: center;
     }
 
     .food-price {
         font-weight: bold;
         color: #28a745;
+        margin-left: 10px;
     }
 
     .back-link {
@@ -75,38 +89,6 @@
         text-decoration: none;
         color: #555;
         font-weight: 500;
-    }
-
-    .back-link:hover {
-        color: #000;
-    }
-
-    .form-card {
-        margin-top: 25px;
-        padding: 20px;
-        background: #f1f1f1;
-        border-radius: 10px;
-    }
-
-    form p {
-        margin-bottom: 12px;
-    }
-
-    form input, form select, form textarea {
-        width: 100%;
-        padding: 8px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-    }
-
-    .btn-save {
-        margin-top: 10px;
-        padding: 8px 16px;
-        border: none;
-        border-radius: 6px;
-        background: #28a745;
-        color: white;
-        cursor: pointer;
     }
 </style>
 
@@ -119,46 +101,78 @@
         <span class="rating-badge">⭐ {{ restaurant.rating }}</span>
     </div>
 
-    <!-- Actions -->
-    <div class="action-links">
-        <a href="{% url 'add_category' restaurant.id %}">
-            ➕ Add Category
-        </a>
-        <a href="{% url 'add_food_item' restaurant.id %}">
-            ➕ Add Food Item
-        </a>
-    </div>
+    <!-- ✅ ADMIN ACTIONS -->
+    {% if request.user.is_authenticated and request.user.profile.role == "admin" %}
+        <div class="admin-actions">
+            <a href="{% url 'add_category' restaurant.id %}" class="add-category">
+                ➕ Add Category
+            </a>
 
-    <!-- Optional Form -->
-    {% if form %}
-    <div class="form-card">
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn-save">Save</button>
-        </form>
-    </div>
+            <a href="{% url 'add_food_item' restaurant.id %}" class="add-food">
+                ➕ Add Food Item
+            </a>
+        </div>
     {% endif %}
 
-    <!-- Categories & Food Items -->
-    <h3 style="margin-top:30px;">Categories & Food Items</h3>
+    <h3>Categories & Food Items</h3>
 
     {% for category in categories %}
         <div class="category-card">
+
             <h4>📂 {{ category.name }}</h4>
 
+            <!-- CATEGORY UPDATE / DELETE -->
+            {% if request.user.profile.role == "admin" %}
+                <div class="category-actions">
+                    <a href="{% url 'update_category' category.id %}">✏️ Edit</a>
+
+                    <form method="POST"
+                          action="{% url 'delete_category' category.id %}"
+                          style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit"
+                                onclick="return confirm('Delete this category?')">
+                            🗑 Delete
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+
+            <!-- FOOD ITEMS -->
             {% if category.items.all %}
                 <ul class="food-list">
                     {% for food in category.items.all %}
                         <li>
-                            <span>🍽️ {{ food.name }}</span>
-                            <span class="food-price">₹{{ food.price }}</span>
+                            <span>
+                                🍽 {{ food.name }}
+                                <span class="food-price">₹{{ food.price }}</span>
+                            </span>
+
+                            <!-- FOOD UPDATE / DELETE -->
+                            {% if request.user.profile.role == "admin" %}
+                                <span class="food-actions">
+                                    <a href="{% url 'update_food_item' food.id %}">
+                                        ✏️
+                                    </a>
+
+                                    <form method="POST"
+                                          action="{% url 'delete_food_item' food.id %}"
+                                          style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                onclick="return confirm('Delete this food item?')">
+                                            🗑
+                                        </button>
+                                    </form>
+                                </span>
+                            {% endif %}
                         </li>
                     {% endfor %}
                 </ul>
             {% else %}
                 <p>No food items in this category.</p>
             {% endif %}
+
         </div>
     {% empty %}
         <p>No categories added yet.</p>
@@ -169,5 +183,4 @@
     </a>
 
 </div>
-
 {% endblock %}

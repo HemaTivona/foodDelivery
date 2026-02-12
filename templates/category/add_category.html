@@ -3,7 +3,7 @@
 {% block content %}
 <style>
     .form-container {
-        max-width: 480px;
+        max-width: 450px;
         margin: 40px auto;
         background: #ffffff;
         padding: 25px 30px;
@@ -31,7 +31,7 @@
     .btn-submit {
         width: 100%;
         padding: 10px;
-        background-color: #28a745;
+        background-color: #ff6b00;
         border: none;
         border-radius: 6px;
         color: white;
@@ -40,7 +40,23 @@
     }
 
     .btn-submit:hover {
-        background-color: #218838;
+        background-color: #e65c00;
+    }
+
+    .btn-delete {
+        width: 100%;
+        margin-top: 12px;
+        padding: 10px;
+        background-color: #dc3545;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .btn-delete:hover {
+        background-color: #c82333;
     }
 
     .back-link {
@@ -58,25 +74,43 @@
 </style>
 
 <div class="form-container">
+
+    
     <h2>
-        Add Food Item
+        {% if category %}
+            Update Category
+        {% else %}
+            Add Category
+        {% endif %}
         <br>
-        <small style="font-size:14px; color:#777;">
-            {{ restaurant.name }}
-        </small>
+        <small>{{ restaurant.name }}</small>
     </h2>
 
-    <form method="POST">
+    <!-- ✅ ADD / UPDATE -->
+    <form method="POST"
+          action="{% if category %}{% url 'update_category' category.id %}{% else %}{% url 'add_category' restaurant.id %}{% endif %}">
         {% csrf_token %}
         {{ form.as_p }}
+
         <button type="submit" class="btn-submit">
-            Add Food Item
+            {% if category %}Update{% else %}Add{% endif %}
         </button>
     </form>
 
-    <a href="{% url 'restaurant_detail' restaurant.id %}" class="back-link">
-        ← Back to Restaurant
-    </a>
-</div>
+    <!-- ✅ DELETE -->
+    {% if category %}
+    <form method="POST" action="{% url 'delete_category' category.id %}">
+        {% csrf_token %}
+        <button class="btn-delete"
+                onclick="return confirm('Delete this category?')">
+            Delete Category
+        </button>
+    </form>
+    {% endif %}
 
+    <a href="{% url 'restaurant_detail' restaurant.id %}" class="back-link">
+        ← Back
+    </a>
+
+</div>
 {% endblock %}

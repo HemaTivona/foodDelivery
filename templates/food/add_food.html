@@ -31,7 +31,7 @@
     .btn-submit {
         width: 100%;
         padding: 10px;
-        background-color: #ff6b00;
+        background-color: #28a745;
         border: none;
         border-radius: 6px;
         color: white;
@@ -40,7 +40,7 @@
     }
 
     .btn-submit:hover {
-        background-color: #e65c00;
+        background-color: #218838;
     }
 
     .back-link {
@@ -58,7 +58,8 @@
 </style>
 
 <div class="form-container">
-    <h2>Add Category<br>
+    <h2>
+        Add Food Item<br>
         <small style="font-size:14px;color:#777;">
             {{ restaurant.name }}
         </small>
@@ -67,11 +68,12 @@
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn-submit">Add Category</button>
+        <button type="submit" class="btn-submit">Add Food Item</button>
     </form>
 
+    <!-- ✅ BACK TO CATEGORY / RESTAURANT -->
     <a href="{% url 'restaurant_detail' restaurant.id %}" class="back-link">
-        ← Back to Restaurant
+        ← Back to Categories
     </a>
 </div>
 

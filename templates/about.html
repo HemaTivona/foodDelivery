@@ -1,26 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>About Us</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 40px;
-        }
+{% extends "base.html" %}
 
-        .about-box {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            max-width: 800px;
-            margin: auto;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            line-height: 1.6;
-        }
-    </style>
-</head>
-<body>
+{% block title %}About Us | Food App{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: #f5f5f5;
+    }
+
+    .about-box {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        max-width: 800px;
+        margin: 40px auto;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        line-height: 1.6;
+    }
+</style>
 
 <div class="about-box">
     <h2>🍔 About Hems Food Zone</h2>
@@ -34,6 +31,4 @@
         From comfort meals to quick bites, we serve happiness on every plate.
     </p>
 </div>
-
-</body>
-</html>
+{% endblock %}

@@ -1,50 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Search Results</title>
+{% extends "base.html" %}
 
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f4f6f8;
-        padding: 30px;
-    }
+{% block title %}Search Results{% endblock %}
 
-    h2 {
-        margin-bottom: 20px;
-    }
+{% block content %}
 
-    .result-card {
-        background: white;
-        padding: 20px;
-        margin-bottom: 15px;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+<div style="padding: 20px; max-width: 900px; margin: auto;">
 
-    .rating {
-        color: #ff9800;
-        font-weight: bold;
-    }
-</style>
-</head>
+    <h2>Search Results for "{{ query }}"</h2>
 
-<body>
+    {% if query %}
 
-<h2>Search Results for "<em>{{ query }}</em>"</h2>
+        <!-- Restaurants -->
+        {% if restaurants %}
+            <h3>🏠 Restaurants</h3>
+            {% for restaurant in restaurants %}
+                <div style="border:1px solid #ddd; padding:15px; margin-bottom:12px; border-radius:8px;">
+                    <h4>
+                        <a href="{% url 'restaurant_detail' restaurant.id %}">
+                            {{ restaurant.name }}
+                        </a>
+                    </h4>
+                    <p>{{ restaurant.description }}</p>
+                    <strong>⭐ {{ restaurant.rating }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
 
-{% if results %}
-    {% for r in results %}
-        <div class="result-card">
-            <h3>{{ r.name }}</h3>
-            <p>{{ r.description }}</p>
-            <p class="rating">⭐ {{ r.rating }}</p>
-        </div>
-    {% endfor %}
-{% else %}
-    <p>No results found.</p>
-{% endif %}
+        <!-- Categories -->
+        {% if categories %}
+            <h3>📂 Categories</h3>
+            {% for category in categories %}
+                <div style="border:1px solid #ddd; padding:15px; margin-bottom:12px; border-radius:8px;">
+                    <h4>{{ category.name }}</h4>
+                    <p>Restaurant: {{ category.restaurant.name }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
 
-</body>
-</html>
+        <!-- Food Items -->
+        {% if food_items %}
+            <h3>🍽 Food Items</h3>
+            {% for food in food_items %}
+                <div style="border:1px solid #ddd; padding:15px; margin-bottom:12px; border-radius:8px;">
+                    <h4>{{ food.name }}</h4>
+                    <p>Category: {{ food.category.name }}</p>
+                    <p>Restaurant: {{ food.restaurant.name }}</p>
+                    <strong>₹ {{ food.price }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if not restaurants and not categories and not food_items %}
+            <p>No results found.</p>
+        {% endif %}
+
+    {% else %}
+        <p>Please enter a search term.</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

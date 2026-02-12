@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from restaurant.models import Restaurant
+from restaurant.models import Restaurant,FoodCategory,FoodItems
 from django.db.models import Q
 
 def auth_view(request):
@@ -55,28 +55,34 @@ def logout_view(request):
 def profile_view(request):
     return render(request,'users/profile.html')
 
-
-from django.http import JsonResponse
-from django.db.models import Q
-
-
 def search(request):
     query = request.GET.get('q', '')
-    results = []
+
+    restaurants = []
+    categories = []
+    food_items = []
 
     if query:
         restaurants = Restaurant.objects.filter(
             Q(name__icontains=query) |
             Q(description__icontains=query) |
-            Q(rating__icontains=query) |
-            Q(categories__name__icontains=query) |   # ✅ FIXED
-            Q(fooditems__name__icontains=query)       # ✅ FIXED
+            Q(rating__icontains=query)
         ).distinct()
 
-        results = restaurants.values(
-            'id',
-            'name',
-            'rating'
-        )
+        categories = FoodCategory.objects.filter(
+            Q(name__icontains=query) |
+            Q(restaurant__name__icontains=query)
+        ).distinct()
 
-    return JsonResponse({'results': list(results)})
+        food_items = FoodItems.objects.filter(
+            Q(name__icontains=query) |
+            Q(category__name__icontains=query) |
+            Q(restaurant__name__icontains=query)
+        ).distinct()
+
+    return render(request, 'users/search.html', {
+        'query': query,
+        'restaurants': restaurants,
+        'categories': categories,
+        'food_items': food_items,
+    })

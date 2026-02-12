@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurants</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #F4F6F8;
+            margin: 0;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: #FFFFFF;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            margin: 0 0 8px;
+            color: #007BFF;
+        }
+
+        .rating {
+            color: #28A745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Available Restaurants</h2>
+
+<div class="container">
+    {% if restaurants %}
+        {% for restaurant in restaurants %}
+            <div class="card">
+                <h3>{{ restaurant.name }}</h3>
+                <p>{{ restaurant.description }}</p>
+                <p class="rating">⭐ Rating: {{ restaurant.rating }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No restaurants available.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>
